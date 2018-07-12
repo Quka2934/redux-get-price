@@ -26,11 +26,11 @@ function fetch_price(e) {
 }
 
 let bodyData = JSON.stringify({
-  CheckInTime: `2018-07-12T00:00:00`,
-  CheckOuttime: `2018-07-13T00:00:00`,
-  HotelIDs: `[345001]`,
+  CheckInTime: "2018-07-13",
+  CheckOuttime: "2018-07-14",
+  HotelIDs: "[345001]",
   Language: "en_US",
-  Currency: `USD`,
+  Currency: "USD",
   QueryType: "SP",
   Adults: 2,
   Device: "Desktop",

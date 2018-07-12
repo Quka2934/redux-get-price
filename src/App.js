@@ -4,51 +4,37 @@ import { connect } from "react-redux";
 import "./style.css";
 
 class App extends Component {
-  onChangeHotel = e => {
+  constructor(props) {
+    super(props);
+    this.state = {
+      dayIn: "",
+      dayOut: "",
+      guests: "",
+      hotelID: "",
+      currency: "USD"
+    };
+  }
+
+  onChange = e => {
     e.preventDefault();
-    this.setState({
-      hotelIDs: Number.parseInt(e.target.value)
-    });
-  };
-  onChangeCheckIn = e => {
-    e.preventDefault();
-    this.setState({
-      dayIn: e.target.value
-    });
-  };
-  onChangeCheckOut = e => {
-    e.preventDefault();
-    this.setState({
-      dayOut: e.target.value
-    });
-  };
-  onChangeGuests = e => {
-    e.preventDefault();
-    this.setState({
-      guests: Number.parseInt(e.target.value)
-    });
-  };
-  onChangeCurrency = e => {
-    e.preventDefault();
-    this.setState({
-      currency: e.target.value
-    });
+    this.setState({ [e.target.name]: e.target.value });
   };
 
   render() {
-    const { data } = this.props;
+    console.log(this.state);
+    console.log(this.props.data);
     return (
       <div className="container">
         <h3 className="center">Get Price Ctrip</h3>
-
         <Row>
           <Input
             s={12}
             m={6}
+            name="hotelID"
             type="select"
             label="Choose Your Hotel"
             defaultValue="1"
-            onChange={this.onChangeHotel}
+            onChange={this.onChange}
           >
             <option value={996317}>Regent, Singapore</option>
             <option value={6347584}>Remm Roppongi, Tokyo</option>
@@ -62,11 +48,11 @@ class App extends Component {
         <div className="row">
           <div className="col s12 m6">
             <label htmlFor="">Check-in Date</label>
-            <input onChange={this.onChangeCheckIn} type="date" />
+            <input name="dayIn" onChange={this.onChange} type="date" />
           </div>
           <div className="col s12 m6">
             <label htmlFor="">Check-in Out</label>
-            <input onChange={this.onChangeCheckOut} type="date" />
+            <input name="dayOut" onChange={this.onChange} type="date" />
           </div>
         </div>
         <Row>
@@ -74,18 +60,20 @@ class App extends Component {
             s={12}
             m={6}
             type="select"
+            name="guests"
             label="Number of Guests"
             defaultValue="1"
-            onChange={this.onChangeGuests}
+            onChange={this.onChange}
           >
             <option value={1}>1</option>
             <option value={2}>2</option>
             <option value={3}>3</option>
           </Input>
           <Input
-            onChange={this.onChangeCurrency}
+            onChange={this.onChange}
             s={12}
             m={6}
+            name="currency"
             type="select"
             label="Currency"
             defaultValue="1"
@@ -98,9 +86,8 @@ class App extends Component {
             Get Price
           </button>
         </Row>
-
         <div id="output" />
-        <h4>{data}</h4>
+        <h4>{this.props.data}</h4>
       </div>
     );
   }
@@ -125,3 +112,19 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(App);
+
+// .then(data => data.json())
+//     .then(json => {
+//       let rooms = json.DataResponse.Hotel[0].SubRoom;
+//       rooms.map(room => {
+//         document.getElementById(
+//           "output"
+//         ).innerHTML += `<div class="teal white-text">
+//       <ul>
+//       <li>Room Name:  ${room.RoomInfo.RoomName}</li>
+//       <li>Days stay: ${room.RoomRates.DayCount}</li>
+//       <li>Price: ${room.RoomRates.Price} ${this.state.currency}/day</li>
+//       <li>Total Cost: ${room.RoomRates.TotalPrice} ${this.state.currency}</li>
+//       </ul></div>`;
+//       });
+//     });
