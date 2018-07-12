@@ -3,15 +3,31 @@ import { Input, Row } from "react-materialize";
 import { connect } from "react-redux";
 import "./style.css";
 
+const bodyData = JSON.stringify({
+  CheckInTime: "2018-07-13",
+  CheckOuttime: "2018-07-14",
+  HotelIDs: "[345001]",
+  Language: "en_US",
+  Currency: "USD",
+  QueryType: "SP",
+  Adults: 2,
+  Device: "Desktop",
+  AllianceID: 310725,
+  SID: 789742,
+  QueryKey: ""
+});
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      prices: [],
       dayIn: "",
       dayOut: "",
       guests: "",
       hotelID: "",
-      currency: "USD"
+      currency: "USD",
+      hoteldata: [],
     };
   }
 
@@ -20,9 +36,14 @@ class App extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+  componentWillReceiveProps(nextProps) {
+    const hoteldata = nextProps.hotelData.DataResponse ? nextProps.hotelData.DataResponse.Hotel : [];
+    this.setState({
+      hoteldata
+    });
+  }
+
   render() {
-    console.log(this.state);
-    console.log(this.props.data);
     return (
       <div className="container">
         <h3 className="center">Get Price Ctrip</h3>
@@ -82,12 +103,18 @@ class App extends Component {
             <option value="EUR">Euro</option>
             <option value="JPY">Yen</option>
           </Input>
-          <button onClick={this.onRequestApi} className="btn">
+          <button onClick={() => this.props.onRequestApi(bodyData)} className="btn">
             Get Price
           </button>
         </Row>
         <div id="output" />
-        <h4>{this.props.data}</h4>
+        <h4>
+        {this.state.hoteldata && this.state.hoteldata.map((hotel) => (
+          <div key={hotel.HotelID}>
+            HotelID: {hotel.HotelID}
+          </div>
+        ))}
+        </h4>
       </div>
     );
   }
@@ -95,15 +122,14 @@ class App extends Component {
 
 const mapStateToProps = state => {
   return {
-    data: state.data
-  };
+    hotelData: state.hotelData
+  }
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    onRequestApi: e => {
-      e.preventDefault();
-      dispatch({ type: "API_CALL_REQUEST" });
+    onRequestApi: (bodyData) => {
+      dispatch({ type: "API_CALL_REQUEST", data: bodyData });
     }
   };
 };
@@ -112,19 +138,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(App);
-
-// .then(data => data.json())
-//     .then(json => {
-//       let rooms = json.DataResponse.Hotel[0].SubRoom;
-//       rooms.map(room => {
-//         document.getElementById(
-//           "output"
-//         ).innerHTML += `<div class="teal white-text">
-//       <ul>
-//       <li>Room Name:  ${room.RoomInfo.RoomName}</li>
-//       <li>Days stay: ${room.RoomRates.DayCount}</li>
-//       <li>Price: ${room.RoomRates.Price} ${this.state.currency}/day</li>
-//       <li>Total Cost: ${room.RoomRates.TotalPrice} ${this.state.currency}</li>
-//       </ul></div>`;
-//       });
-//     });
